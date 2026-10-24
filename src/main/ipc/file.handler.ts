@@ -101,7 +101,7 @@ export function registerFileHandlers(): void {
           ? realUserDataDir
           : realUserDataDir + path.sep;
         const inUserData = realPath.startsWith(userDataPrefix) || realPath === realUserDataDir;
-        const isAllowed = allowedPaths.has(realPath) || allowedPaths.has(normalizedPath);
+        const isAllowed = allowedPaths.has(realPath);
 
         if (!isSafeExtension || (!inUserData && !isAllowed)) {
           throw new Error('Access to this file path is denied');
@@ -256,4 +256,3 @@ export function registerFileHandlers(): void {
     }
   });
 }
-
