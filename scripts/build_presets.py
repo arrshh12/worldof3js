@@ -397,3 +397,15 @@ presets_output.append({
     "category": "Flora",
     "dominantColor": "#4ade80",
     "targetHeight": 0.85,
+    "depth": 0.12,
+    "description": "Dense clump of varied alpine grass blades with natural curved silhouettes.",
+    "albedoBase64": img_to_base64_png(grass_rgba),
+    "normalBase64": img_to_base64_png(grass_normal),
+    "contour": grass_c_pts
+})
+
+# Write the generated presets as a TypeScript module.
+with open(OUT_TS, "w", encoding="utf-8") as output_file:
+    output_file.write("export const presetData = ")
+    json.dump(presets_output, output_file, indent=2)
+    output_file.write(" as const;\n")
