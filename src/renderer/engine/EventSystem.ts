@@ -220,7 +220,7 @@ export class EventSystem {
       }
 
       default:
-        console.debug(`[EventSystem] Unhandled action type: ${action.type}`, action);
+        console.debug('[EventSystem] Unhandled action type:', action.type, action);
     }
   }
 
