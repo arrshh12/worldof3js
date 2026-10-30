@@ -6,8 +6,9 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 BRAIN_DIR = r"C:\Users\vantr\.gemini\antigravity\brain\31169f3a-aba0-43bd-bfa2-a299bfa605ea"
-ASSETS_DIR = r"c:\antigravity\world of 3js\assets\presets"
-OUT_TS = r"c:\antigravity\world of 3js\src\renderer\engine\presets\presetData.ts"
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ASSETS_DIR = os.path.join(REPO_ROOT, "assets", "presets")
+OUT_TS = os.path.join(REPO_ROOT, "src", "renderer", "engine", "presets", "presetData.ts")
 
 os.makedirs(ASSETS_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(OUT_TS), exist_ok=True)
