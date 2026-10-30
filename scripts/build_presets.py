@@ -398,7 +398,7 @@ presets_output.append({
     "category": "Flora",
     "dominantColor": "#4ade80",
     "targetHeight": 0.85,
-    "depth": 0.12,
+    "depth": 0.35,
     "description": "Dense clump of varied alpine grass blades with natural curved silhouettes.",
     "albedoBase64": img_to_base64_png(grass_rgba),
     "normalBase64": img_to_base64_png(grass_normal),
