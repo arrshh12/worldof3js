@@ -405,8 +405,14 @@ presets_output.append({
     "contour": grass_c_pts
 })
 
-# Write the generated presets as a TypeScript module.
+# Write the generated presets as a TypeScript module while preserving its runtime contract.
 with open(OUT_TS, "w", encoding="utf-8") as output_file:
+    output_file.write("export interface RawPresetData {\n")
+    output_file.write("  id: string;\n  name: string;\n  type: string;\n  category: string;\n")
+    output_file.write("  dominantColor: string;\n  targetHeight: number;\n  depth: number;\n")
+    output_file.write("  description: string;\n  albedoBase64: string;\n  normalBase64: string;\n  contour: number[][];\n")
+    output_file.write("}\n\n")
     output_file.write("export const presetData = ")
     json.dump(presets_output, output_file, indent=2)
-    output_file.write(" as const;\n")
+    output_file.write(" as const;\n\n")
+    output_file.write("export const PRESET_CATALOG: RawPresetData[] = presetData;\n")
