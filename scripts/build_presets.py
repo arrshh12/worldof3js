@@ -414,13 +414,22 @@ existing_presets = []
 if os.path.exists(OUT_TS):
     with open(OUT_TS, "r", encoding="utf-8") as source_file:
         existing_source = source_file.read()
-    match = re.search(r"export const presetData(?:\s*:\s*RawPresetData\[\])? = (.*?)(?: as const)?;", existing_source, re.DOTALL)
-    if not match:
+    declaration = re.search(
+        r"export const (?:presetData|PRESET_CATALOG)(?:\s*:\s*RawPresetData\[\])?\s*=",
+        existing_source,
+    )
+    if not declaration:
         raise RuntimeError(f"Could not read existing preset catalog from {OUT_TS}; refusing to replace it")
+    json_start = declaration.end()
+    while json_start < len(existing_source) and existing_source[json_start].isspace():
+        json_start += 1
     try:
-        existing_presets = json.loads(match.group(1))
+        existing_presets, json_end = json.JSONDecoder().raw_decode(existing_source, json_start)
     except json.JSONDecodeError as error:
         raise RuntimeError(f"Could not parse existing preset catalog in {OUT_TS}; refusing to replace it") from error
+    suffix = existing_source[json_end:]
+    if not re.match(r"\s*(?:as\s+const\s*)?;", suffix):
+        raise RuntimeError(f"Could not read existing preset catalog declaration in {OUT_TS}; refusing to replace it")
 
 generated_by_id = {preset["id"]: preset for preset in presets_output}
 merged_presets = [preset for preset in existing_presets if preset.get("id") not in generated_by_id]
