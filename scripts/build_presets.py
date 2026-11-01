@@ -1,6 +1,7 @@
 import os
 import base64
 import json
+import re
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -127,8 +128,7 @@ for item in nano_banana_assets:
     print(f"Processing Nano Banana image: {item['id']}")
     src_img = cv2.imread(item['file'])
     if src_img is None:
-        print(f"Failed to read {item['file']}")
-        continue
+        raise RuntimeError(f"Failed to read configured image {item['file']}; preset catalog was not updated")
 
     # Resize to standard 512x512
     src_img = cv2.resize(src_img, (512, 512), interpolation=cv2.INTER_AREA)
@@ -405,6 +405,23 @@ presets_output.append({
     "contour": grass_c_pts
 })
 
+# Merge generated entries into the existing catalog; preserve entries this script does not generate.
+existing_presets = []
+if os.path.exists(OUT_TS):
+    with open(OUT_TS, "r", encoding="utf-8") as source_file:
+        existing_source = source_file.read()
+    match = re.search(r"export const presetData = (.*?) as const;", existing_source, re.DOTALL)
+    if not match:
+        raise RuntimeError(f"Could not read existing preset catalog from {OUT_TS}; refusing to replace it")
+    try:
+        existing_presets = json.loads(match.group(1))
+    except json.JSONDecodeError as error:
+        raise RuntimeError(f"Could not parse existing preset catalog in {OUT_TS}; refusing to replace it") from error
+
+generated_by_id = {preset["id"]: preset for preset in presets_output}
+merged_presets = [preset for preset in existing_presets if preset.get("id") not in generated_by_id]
+merged_presets.extend(generated_by_id.values())
+
 # Write the generated presets as a TypeScript module while preserving its runtime contract.
 with open(OUT_TS, "w", encoding="utf-8") as output_file:
     output_file.write("export interface RawPresetData {\n")
@@ -413,6 +430,6 @@ with open(OUT_TS, "w", encoding="utf-8") as output_file:
     output_file.write("  description: string;\n  albedoBase64: string;\n  normalBase64: string;\n  contour: number[][];\n")
     output_file.write("}\n\n")
     output_file.write("export const presetData = ")
-    json.dump(presets_output, output_file, indent=2)
+    json.dump(merged_presets, output_file, indent=2)
     output_file.write(" as const;\n\n")
     output_file.write("export const PRESET_CATALOG: RawPresetData[] = presetData;\n")
