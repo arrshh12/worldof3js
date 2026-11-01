@@ -410,7 +410,7 @@ existing_presets = []
 if os.path.exists(OUT_TS):
     with open(OUT_TS, "r", encoding="utf-8") as source_file:
         existing_source = source_file.read()
-    match = re.search(r"export const presetData = (.*?) as const;", existing_source, re.DOTALL)
+    match = re.search(r"export const presetData(?:\s*:\s*RawPresetData\[\])? = (.*?)(?: as const)?;", existing_source, re.DOTALL)
     if not match:
         raise RuntimeError(f"Could not read existing preset catalog from {OUT_TS}; refusing to replace it")
     try:
@@ -429,7 +429,7 @@ with open(OUT_TS, "w", encoding="utf-8") as output_file:
     output_file.write("  dominantColor: string;\n  targetHeight: number;\n  depth: number;\n")
     output_file.write("  description: string;\n  albedoBase64: string;\n  normalBase64: string;\n  contour: number[][];\n")
     output_file.write("}\n\n")
-    output_file.write("export const presetData = ")
+    output_file.write("export const presetData: RawPresetData[] = ")
     json.dump(merged_presets, output_file, indent=2)
-    output_file.write(" as const;\n\n")
+    output_file.write(";\n\n")
     output_file.write("export const PRESET_CATALOG: RawPresetData[] = presetData;\n")
