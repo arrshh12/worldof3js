@@ -6,8 +6,12 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-BRAIN_DIR = r"C:\Users\vantr\.gemini\antigravity\brain\31169f3a-aba0-43bd-bfa2-a299bfa605ea"
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Set PRESET_SOURCE_DIR to the directory containing the source JPGs. By default,
+# source images are read from the repository's assets/preset_sources directory.
+PRESET_SOURCE_DIR = os.environ.get(
+    "PRESET_SOURCE_DIR", os.path.join(REPO_ROOT, "assets", "preset_sources")
+)
 ASSETS_DIR = os.path.join(REPO_ROOT, "assets", "presets")
 OUT_TS = os.path.join(REPO_ROOT, "src", "renderer", "engine", "presets", "presetData.ts")
 
@@ -92,7 +96,7 @@ nano_banana_assets = [
         "name": "Cyborg Scout Lyra-9",
         "type": "npc",
         "category": "NPCs",
-        "file": os.path.join(BRAIN_DIR, "npc_cyber_cyborg_1791385944267.jpg"),
+        "file": os.path.join(PRESET_SOURCE_DIR, "npc_cyber_cyborg_1791385944267.jpg"),
         "dominantColor": "#06b6d4",
         "targetHeight": 1.85,
         "depth": 0.14,
@@ -103,7 +107,7 @@ nano_banana_assets = [
         "name": "Arcanist Elenya",
         "type": "npc",
         "category": "NPCs",
-        "file": os.path.join(BRAIN_DIR, "npc_arcane_mystic_1791385981154.jpg"),
+        "file": os.path.join(PRESET_SOURCE_DIR, "npc_arcane_mystic_1791385981154.jpg"),
         "dominantColor": "#3b82f6",
         "targetHeight": 1.80,
         "depth": 0.12,
@@ -114,7 +118,7 @@ nano_banana_assets = [
         "name": "Nomad Scavenger Kael",
         "type": "npc",
         "category": "NPCs",
-        "file": os.path.join(BRAIN_DIR, "npc_desert_scavenger_1791386028356.jpg"),
+        "file": os.path.join(PRESET_SOURCE_DIR, "npc_desert_scavenger_1791386028356.jpg"),
         "dominantColor": "#d97706",
         "targetHeight": 1.88,
         "depth": 0.15,
